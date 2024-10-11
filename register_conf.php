@@ -1,11 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['id_user'])) {
-    header('Location: login.php');
-    exit();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,8 +8,8 @@ if (!isset($_SESSION['id_user'])) {
 </head>
 <body>
     <div class="container">
-    <h1>Bienvenido, <?php echo $_SESSION['username']; ?>!</h1>
-    <a href="logout.php">Cerrar sesión</a>
+    <h1>CUENTA CREADA CORRECTAMENTE!</h1>
+    <a href="login.php">Iniciar sesión</a>
     </div>
 </body>
 </html>

@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param('ss', $username, $hash_password);
 
         if ($stmt->execute()) {
-            echo "Usuario registrado exitosamente.";
+            header('Location: register_conf.php');
+            exit(); // Importante para asegurar que el script se detenga después de la redirección
         } else {
             echo "Error al registrar usuario.";
         }
@@ -30,22 +31,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Registro</title>
 </head>
 <body>
-    <h2>Registrar nuevo usuario</h2>
+    <div class="container">
+    <h2>Registro</h2>
     <form method="POST" action="register.php">
         <label for="username">Usuario:</label>
         <input type="text" id="username" name="username" required><br>
         <label for="password">Contraseña:</label>
         <input type="password" id="password" name="password" required><br>
         <input type="submit" value="Registrar">
+        <a href="login.php">¿Tienes cuenta? Inicia sesión</a>
+
     </form>
+    </div>
 </body>
 </html>

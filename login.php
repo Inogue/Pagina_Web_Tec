@@ -30,22 +30,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Iniciar sesión</h2>
-    <form method="POST" action="login.php">
-        <label for="username">Usuario:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Iniciar sesión">
-    </form>
+
+    <div class="container">
+        <h2>Iniciar sesión</h2>
+        <form method="POST" action="login.php">
+            <input type="text" id="username" name="username" placeholder="Usuario" required>
+            <input type="password" id="password" name="password" placeholder="Contraseña" required>
+            <input type="submit" value="Iniciar sesión">
+        </form>
+        <a href="register.php">¿No tienes cuenta? Regístrate</a>
+    </div>
+
 </body>
 </html>
