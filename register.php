@@ -1,5 +1,9 @@
 <?php
-require 'config.php';
+require 'config.php'; // Incluir archivo de configuración para la conexión a la base de datos
+
+// Inicializar variables para mensajes de error y éxito
+$error_message = '';
+$success_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -12,9 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        echo "El usuario ya existe.";
+        // Si el usuario ya existe, mostrar mensaje de error
+        $error_message = "El usuario ya existe.";
     } else {
-        // Encriptar la contraseÃ±a
+        // Encriptar la contraseña
         $hash_password = password_hash($password, PASSWORD_BCRYPT);
 
         // Insertar usuario en la base de datos
@@ -22,35 +27,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param('ss', $username, $hash_password);
 
         if ($stmt->execute()) {
-            header('Location: register_conf.php');
-            exit(); // Importante para asegurar que el script se detenga despuÃ©s de la redirecciÃ³n
+            // Si el registro es exitoso, mostrar mensaje de éxito
+            $success_message = "Usuario registrado exitosamente.";
         } else {
-            echo "Error al registrar usuario.";
+            // Si hay un error al insertar en la base de datos, mostrar mensaje de error
+            $error_message = "Error al registrar usuario.";
         }
     }
+    // Cerrar la consulta
     $stmt->close();
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> <!-- Aseguramos que la página esté codificada en UTF-8 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Registro</title>
+    <link rel="stylesheet" href="style.css"> <!-- Enlace a la hoja de estilos -->
+    <title>Registro</title> <!-- Título de la página -->
 </head>
 <body>
     <div class="container">
-    <h2>Registro</h2>
-    <form method="POST" action="register.php">
-        <label for="username">Usuario:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">ContraseÃ±a:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Registrar">
-        <a href="login.php">Â¿Tienes cuenta? Inicia sesiÃ³n</a>
+        <h2>Registro</h2>
+        
+        <!-- Mostrar mensaje de éxito si existe -->
+        <?php if ($success_message): ?>
+            <p class="success-message"><?php echo $success_message; ?></p>
+        <?php endif; ?>
 
-    </form>
+        <!-- Mostrar mensaje de error si existe -->
+        <?php if ($error_message): ?>
+            <p class="error-message"><?php echo $error_message; ?></p>
+        <?php endif; ?>
+        
+        <!-- Formulario de registro -->
+        <form method="POST" action="register.php">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="password">ContraseÃ±a:</label> <!-- Correctamente escrito "Contraseña" -->
+            <input type="password" id="password" name="password" required><br>
+
+            <input type="submit" value="Registrar"> <!-- Botón de enviar formulario -->
+
+            <a href="login.php">Â¿Tienes cuenta? Inicia sesiÃ³n</a> <!-- Enlace para iniciar sesión si ya tiene cuenta -->
+        </form>
     </div>
 </body>
 </html>

@@ -2,6 +2,9 @@
 session_start();
 require 'config.php';
 
+// Inicializar variable para el mensaje de error
+$error_message = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -14,18 +17,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        // Verificar la contraseña con hash
+        // Verificar la contrase�a con hash
         if (password_verify($password, $row['hash_password'])) {
-            // Iniciar sesión
+            // Iniciar sesi�n
             $_SESSION['id_user'] = $row['id_user'];
             $_SESSION['username'] = $username;
             header('Location: dashboard.php');  // Redirigir a dashboard
             exit();
         } else {
-            echo "Contraseña incorrecta.";
+            // Si la contrase�a es incorrecta, mostrar mensaje de error
+            $error_message = "Contraseña incorrecta.";
         }
     } else {
-        echo "Usuario no encontrado.";
+        // Si el usuario no se encuentra, mostrar mensaje de error
+        $error_message = "Usuario no encontrado.";
     }
     $stmt->close();
 }
@@ -42,6 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="container">
         <h2>Iniciar sesión</h2>
+
+        <!-- Mostrar mensaje de error si existe -->
+        <?php if ($error_message): ?>
+            <p class="error-message"><?php echo $error_message; ?></p>
+        <?php endif; ?>
+
         <form method="POST" action="login.php">
             <input type="text" id="username" name="username" placeholder="Usuario" required>
             <input type="password" id="password" name="password" placeholder="Contraseña" required>
@@ -52,3 +63,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 </body>
 </html>
+
