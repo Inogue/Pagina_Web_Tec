@@ -2,11 +2,15 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 /* Estilo del cuerpo de la página */
 body {
+    background-image: url('jungla.jpg.jpg');
+    background-size: cover; /* Para que la imagen cubra toda la pantalla */
+    background-position: center; /* Para centrar la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+
     display: flex;
     justify-content: center;
     align-items: center;
