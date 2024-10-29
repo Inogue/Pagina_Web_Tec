@@ -5,11 +5,24 @@ require 'config.php';
 // Inicializar variable para el mensaje de error
 $error_message = '';
 
+// Lógica para cambiar de idioma
+$idioma = 'es'; // Español por defecto
+if (isset($_GET['idioma'])) {
+    $idioma = $_GET['idioma'];
+}
+
+// Cambia los textos según el idioma
+$titulo = $idioma == 'es' ? 'Iniciar sesión' : 'Logg inn';
+$placeholderUsuario = $idioma == 'es' ? 'Usuario' : 'Brukernavn';
+$placeholderContraseña = $idioma == 'es' ? 'Contraseña' : 'Passord';
+$mensajeRegistro = $idioma == 'es' ? '¿No tienes cuenta? Regístrate' : 'Har du ikke en konto? Registrer deg';
+$mensajeErrorContraseña = $idioma == 'es' ? "Contraseña incorrecta." : "Feil passord.";
+$mensajeErrorUsuario = $idioma == 'es' ? "Usuario no encontrado." : "Bruker ikke funnet.";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Preparar consulta SQL para evitar SQL Injection
     $stmt = $conn->prepare('SELECT id_user, hash_password FROM users WHERE username = ?');
     $stmt->bind_param('s', $username);
     $stmt->execute();
@@ -17,50 +30,61 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        // Verificar la contrase�a con hash
         if (password_verify($password, $row['hash_password'])) {
-            // Iniciar sesi�n
             $_SESSION['id_user'] = $row['id_user'];
             $_SESSION['username'] = $username;
-            header('Location: dashboard.php');  // Redirigir a dashboard
+            header('Location: dashboard.php');
             exit();
         } else {
-            // Si la contrase�a es incorrecta, mostrar mensaje de error
-            $error_message = "Contraseña incorrecta.";
+            $error_message = $mensajeErrorContraseña;
         }
     } else {
-        // Si el usuario no se encuentra, mostrar mensaje de error
-        $error_message = "Usuario no encontrado.";
+        $error_message = $mensajeErrorUsuario;
     }
     $stmt->close();
 }
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo $idioma; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión</title>
-    <link rel="stylesheet" href="style.css">
+    <title><?php echo $titulo; ?></title>
+    <link rel="stylesheet" href="style_1.css">
 </head>
 <body>
 
-    <div class="container">
-        <h2>Iniciar sesión</h2>
+    <!-- Menú desplegable de cambio de idioma -->
+    <div class="language-switcher" id="languuage_options">
+        <button class="dropdown-button">
+            <?php echo $idioma == 'es' ? 'ESP' : 'NOR'; ?>
+        </button>
+        <div class="dropdown-content">
+            <a href="?idioma=es">
+                <img src="flag_es.png" alt="Español" class="flag-icon"> ESP
+            </a>
+            <a href="?idioma=no">
+                <img src="flag_no.png" alt="Norsk" class="flag-icon"> NOR
+            </a>
+        </div>
+    </div>
 
-        <!-- Mostrar mensaje de error si existe -->
+    <div class="container">
+        <h2><?php echo $titulo; ?></h2>
+
         <?php if ($error_message): ?>
             <p class="error-message"><?php echo $error_message; ?></p>
         <?php endif; ?>
 
-        <form method="POST" action="login.php">
-            <input type="text" id="username" name="username" placeholder="Usuario" required>
-            <input type="password" id="password" name="password" placeholder="Contraseña" required>
-            <input type="submit" value="Iniciar sesión">
+        <form method="POST" action="login.php?idioma=<?php echo $idioma; ?>">
+            <input type="text" id="username" name="username" placeholder="<?php echo $placeholderUsuario; ?>" required>
+            <input type="password" id="password" name="password" placeholder="<?php echo $placeholderContraseña; ?>" required>
+            <input type="submit" value="<?php echo $titulo; ?>">
         </form>
-        <a href="register.php">¿No tienes cuenta? Regístrate</a>
+        <a href="register.php"><?php echo $mensajeRegistro; ?></a>
+	<!-- Enlace para recuperar contraseña -->
+        <a href="forgot_password.php" class="forgot-password">¿Has olvidado tu contraseña?</a>
     </div>
 
 </body>
 </html>
-

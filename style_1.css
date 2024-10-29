@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo del cuerpo de la página */
+body {
+    background-image: url('jungla.jpg.jpg'); /* Verifica que la ruta de la imagen sea correcta */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Estilo del contenedor principal */
+.container {
+    background-color: #fff;
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Título */
+h2 {
+    margin-bottom: 2.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Estilos de los campos de entrada */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Efecto hover/focus en los inputs */
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #333;
+    outline: none;
+}
+
+/* Botón de envío */
+input[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Efecto hover en el botón */
+input[type="submit"]:hover {
+    background-color: #555;
+}
+
+/* Estilos para enlaces */
+a {
+    display: block;
+    margin-top: 1.5rem;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Espaciado y organización del formulario */
+form {
+    margin-top: 1rem;
+}
+
+/* Estilos para el menú de idiomas */
+#languuage_options {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.dropdown-button {
+    background-color: transparent;
+    border: none;
+    color: white; /* Cambiado a negro para mejor contraste */
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 5px 10px;
+}
+
+/* Estilos para el contenido del menú desplegable */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 5px 0;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: #333; /* Cambiado a negro */
+    text-decoration: none;
+    padding: 8px 10px;
+    display: flex; /* Cambiado a flex para alinear imagen y texto */
+    align-items: center; /* Centrado verticalmente */
+    font-size: 0.85rem;
+    transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.flag-icon {
+    width: 15px; /* Ajusta el tamaño de la bandera */
+    height: auto; /* Mantiene la proporción */
+    margin-right: 5px; /* Espacio entre la bandera y el texto */
+}
+
+/* Mostrar el contenido del menú al pasar el mouse sobre el botón */
+#languuage_options:hover .dropdown-content {
+    display: block;
+}
+
