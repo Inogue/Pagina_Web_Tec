@@ -5,64 +5,70 @@ require 'config.php'; // Incluir archivo de configuración para la conexión a l
 $error_message = '';
 $success_message = '';
 
-// Cambia el idioma de forma similar al código de inicio de sesión
+// Lógica para cambiar el idioma de forma similar al código de inicio de sesión
 $idioma = 'es'; // Español por defecto
 if (isset($_GET['idioma'])) {
     $idioma = $_GET['idioma'];
 }
 
-// Cambia los textos según el idioma
+// Cambiar los textos según el idioma
 $titulo = $idioma == 'es' ? 'Registro' : 'Registrering';
 $placeholderUsuario = $idioma == 'es' ? 'Usuario' : 'Brukernavn';
 $placeholderContraseña = $idioma == 'es' ? 'Contraseña' : 'Passord';
 $mensajeExito = $idioma == 'es' ? 'Usuario registrado exitosamente.' : 'Brukeren ble registrert.';
 $mensajeErrorUsuario = $idioma == 'es' ? 'El usuario ya existe.' : 'Brukeren eksisterer allerede.';
 $mensajeErrorRegistro = $idioma == 'es' ? 'Error al registrar usuario.' : 'Feil ved registrering av bruker.';
+$mensajeErrorContraseña = $idioma == 'es' ? 'La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial.' : 'Passordet må ha minst 8 tegn, et stort bokstav, et lite bokstav, et tall og et spesialtegn.';
 
 // Lógica del formulario de registro
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
+    $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Verificar si el usuario ya existe
-    $stmt = $conn->prepare('SELECT id_user FROM users WHERE username = ?');
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
-        // Si el usuario ya existe, mostrar mensaje de error
-        $error_message = $mensajeErrorUsuario;
+    // Validar la contraseña
+    if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
+        $error_message = $mensajeErrorContraseña;
     } else {
-        // Encriptar la contraseña
-        $hash_password = password_hash($password, PASSWORD_BCRYPT);
+        // Verificar si el usuario ya existe
+        $stmt = $conn->prepare('SELECT id_user FROM users WHERE username = ? OR email = ?');
+        $stmt->bind_param('ss', $username, $email);
+        $stmt->execute();
+        $stmt->store_result();
 
-        // Insertar usuario en la base de datos
-        $stmt = $conn->prepare('INSERT INTO users (username, hash_password) VALUES (?, ?)');
-        $stmt->bind_param('ss', $username, $hash_password);
-
-        if ($stmt->execute()) {
-            // Si el registro es exitoso, mostrar mensaje de éxito
-            $success_message = $mensajeExito;
+        if ($stmt->num_rows > 0) {
+            // Si el usuario ya existe, mostrar mensaje de error
+            $error_message = $mensajeErrorUsuario;
         } else {
-            // Si hay un error al insertar en la base de datos, mostrar mensaje de error
-            $error_message = $mensajeErrorRegistro;
+            // Encriptar la contraseña
+            $hash_password = password_hash($password, PASSWORD_BCRYPT);
+
+            // Insertar usuario en la base de datos
+            $stmt = $conn->prepare('INSERT INTO users (username, email, hash_password) VALUES (?, ?, ?)');
+            $stmt->bind_param('sss', $username, $email, $hash_password);
+
+            if ($stmt->execute()) {
+                // Si el registro es exitoso, mostrar mensaje de éxito
+                $success_message = $mensajeExito;
+            } else {
+                // Si hay un error al insertar en la base de datos, mostrar mensaje de error
+                $error_message = $mensajeErrorRegistro;
+            }
         }
+        // Cerrar la consulta
+        $stmt->close();
     }
-    // Cerrar la consulta
-    $stmt->close();
 }
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $idioma; ?>">
 <head>
-    <meta charset="UTF-8"> <!-- Aseguramos que la página esté codificada en UTF-8 -->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style_1.css"> <!-- Enlace a la hoja de estilos -->
-    <title><?php echo $titulo; ?></title> <!-- Título de la página -->
+    <link rel="stylesheet" href="style_1.css">
+    <title><?php echo $titulo; ?></title>
 </head>
 <body>
-    <!-- Menú desplegable de cambio de idioma -->
     <div class="language-switcher" id="languuage_options">
         <button class="dropdown-button">
             <?php echo $idioma == 'es' ? 'ESP' : 'NOR'; ?>
@@ -95,14 +101,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="username"><?php echo $placeholderUsuario; ?>:</label>
             <input type="text" id="username" name="username" required placeholder="<?php echo $placeholderUsuario; ?>">
 
+            <label for="email"><?php echo $idioma == 'es' ? 'Correo electrónico' : 'E-post'; ?>:</label>
+            <input type="email" id="email" name="email" required placeholder="<?php echo $idioma == 'es' ? 'Correo electrónico' : 'E-post'; ?>">
+
             <label for="password"><?php echo $placeholderContraseña; ?>:</label>
             <input type="password" id="password" name="password" required placeholder="<?php echo $placeholderContraseña; ?>">
 
-            <input type="submit" value="<?php echo $titulo; ?>"> <!-- Botón de enviar formulario -->
+            <input type="submit" value="<?php echo $titulo; ?>">
 
-            <a href="login.php"><?php echo $idioma == 'es' ? '¿Tienes cuenta? Inicia sesión' : 'Har du en konto? Logg inn'; ?></a> <!-- Enlace para iniciar sesión si ya tiene cuenta -->
+            <a href="login.php"><?php echo $idioma == 'es' ? '¿Tienes cuenta? Inicia sesión' : 'Har du en konto? Logg inn'; ?></a>
         </form>
     </div>
 </body>
 </html>
-

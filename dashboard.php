@@ -149,4 +149,3 @@ $cerrarSesion = $idioma == 'es' ? 'Cerrar sesión' : 'Logg ut';
     </div>
 </body>
 </html>
-

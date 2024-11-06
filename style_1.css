@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +7,7 @@
 
 /* Estilo del cuerpo de la página */
 body {
-    background-image: url('jungla.jpg.jpg'); /* Verifica que la ruta de la imagen sea correcta */
+    background-image: url('jungla.jpg'); /* Verifica que la ruta de la imagen sea correcta */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -38,7 +39,7 @@ h2 {
 }
 
 /* Estilos de los campos de entrada */
-input[type="text"],
+input[type="text"],input[type="email"],
 input[type="password"] {
     width: 100%;
     padding: 0.75rem;
@@ -147,4 +148,3 @@ form {
 #languuage_options:hover .dropdown-content {
     display: block;
 }
-
